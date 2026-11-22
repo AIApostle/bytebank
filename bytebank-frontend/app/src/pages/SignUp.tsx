@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { 
   Mail, 
   Lock, 
@@ -12,9 +12,11 @@ import {
   Sparkles
 } from 'lucide-react'
 import AuthLayout from '../components/AuthLayout'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function SignUp() {
   const navigate = useNavigate()
+  const { signup, isLoading: authLoading } = useAuth()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,7 +28,7 @@ export default function SignUp() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [localLoading, setLocalLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,14 +83,21 @@ export default function SignUp() {
       return
     }
 
-    setIsLoading(true)
+    setLocalLoading(true)
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      // For demo purposes, navigate to dashboard
+    try {
+      await signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        company: formData.company
+      })
       navigate('/')
-    }, 1500)
+    } catch (error) {
+      setErrors({ submit: 'Failed to create account. Please try again.' })
+    } finally {
+      setLocalLoading(false)
+    }
   }
 
   const passwordRequirements = [
@@ -204,6 +213,7 @@ export default function SignUp() {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -253,6 +263,7 @@ export default function SignUp() {
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
             >
               {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -302,10 +313,10 @@ export default function SignUp() {
         {/* Submit button */}
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={localLoading || authLoading}
           className="w-full group relative inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-mint-500 to-emerald-600 text-white font-semibold text-lg transition-all hover:shadow-xl hover:shadow-mint-500/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
-          {isLoading ? (
+          {localLoading || authLoading ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               <span>Creating account...</span>

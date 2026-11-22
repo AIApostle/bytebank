@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, X, ChevronRight, Zap } from 'lucide-react'
+import { Menu, X, ChevronRight, Zap, User, LogOut } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user, isAuthenticated, logout } = useAuth()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
@@ -37,18 +39,46 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <button className="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-slate-700 hover:text-navy-900 transition-colors">
-              Sign in
-            </button>
-            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-sm font-semibold transition-all hover:shadow-lg hover:shadow-navy-900/20 active:scale-[0.98]">
-              <span>Get started</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            {isAuthenticated ? (
+              <>
+                <div className="hidden sm:flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 border border-slate-200">
+                    <User className="w-4 h-4 text-slate-600" />
+                    <span className="text-sm font-medium text-slate-700">{user?.name}</span>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 hover:border-slate-400 text-slate-700 hover:text-navy-900 text-sm font-semibold transition-colors bg-white"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Log out</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/signin"
+                  className="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-slate-700 hover:text-navy-900 transition-colors"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-sm font-semibold transition-all hover:shadow-lg hover:shadow-navy-900/20 active:scale-[0.98]"
+                >
+                  <span>Get started</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </>
+            )}
 
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-slate-100 transition-colors"
+              aria-expanded={mobileMenuOpen}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             >
               {mobileMenuOpen ? (
                 <X className="w-5 h-5 text-slate-700" />
