@@ -1,75 +1,76 @@
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Menu, X, ChevronRight, Zap } from 'lucide-react'
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-border">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-mint to-emerald">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
-              </svg>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative flex h-9 w-9 items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-mint-400 to-mint-600 rounded-lg rotate-6 group-hover:rotate-12 transition-transform duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-mint-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
+              </div>
             </div>
-            <span className="text-lg font-bold text-navy-midnight">Bytebank</span>
+            <span className="text-lg font-bold tracking-tight text-navy-950">
+              Bytebank
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#product" className="text-sm text-slate hover:text-main transition-colors font-medium">
-              Product
-            </a>
-            <a href="#how-it-works" className="text-sm text-slate hover:text-main transition-colors font-medium">
-              How it works
-            </a>
-            <a href="#developers" className="text-sm text-slate hover:text-main transition-colors font-medium">
-              Developers
-            </a>
-            <a href="#about" className="text-sm text-slate hover:text-main transition-colors font-medium">
-              About
-            </a>
+          <nav className="hidden md:flex items-center gap-1">
+            {['Product', 'Developers', 'Pricing', 'About'].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-navy-900 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                {item}
+              </a>
+            ))}
           </nav>
 
-          {/* CTA Buttons */}
-          <div className="flex items-center gap-4">
-            <button className="hidden sm:inline-block text-sm font-medium text-slate hover:text-main transition-colors">
+          {/* Right side */}
+          <div className="flex items-center gap-3">
+            <button className="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-slate-700 hover:text-navy-900 transition-colors">
               Sign in
             </button>
-            <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-mint hover:bg-emerald text-white text-sm font-semibold transition-colors">
-              Get started
+            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-sm font-semibold transition-all hover:shadow-lg hover:shadow-navy-900/20 active:scale-[0.98]">
+              <span>Get started</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
 
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-cloud transition-colors"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-slate-100 transition-colors"
             >
-              <svg className="w-6 h-6 text-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 text-slate-700" />
+              ) : (
+                <Menu className="w-5 h-5 text-slate-700" />
+              )}
             </button>
           </div>
         </div>
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border py-4 space-y-3">
-            <a href="#product" className="block px-4 py-2 text-sm font-medium text-slate hover:text-main">
-              Product
-            </a>
-            <a href="#how-it-works" className="block px-4 py-2 text-sm font-medium text-slate hover:text-main">
-              How it works
-            </a>
-            <a href="#developers" className="block px-4 py-2 text-sm font-medium text-slate hover:text-main">
-              Developers
-            </a>
-            <a href="#about" className="block px-4 py-2 text-sm font-medium text-slate hover:text-main">
-              About
-            </a>
+          <div className="md:hidden border-t border-slate-200 py-4 space-y-1">
+            {['Product', 'Developers', 'Pricing', 'About'].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="block px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                {item}
+              </a>
+            ))}
           </div>
         )}
       </div>
